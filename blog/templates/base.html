@@ -25,7 +25,7 @@
       <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
           <div class="container">
-            <h1><a class="brand" href="/">Blog</a></h1>
+            <h1><a class="brand" href="{{ url_for('index') }}">Blog</a></h1>
             <ul class="nav">
               <li><a href="{{ url_for('posts.list') }}">Posts</a></li>
               {% if g.user %}

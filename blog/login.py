@@ -40,7 +40,7 @@ def login():
         app.logger.info('Login for %s (%d) failed.', user.name, user.id)
         return redirect(url_for('login'))
 
-    url = session.pop('redirect-to', '/')
+    url = session.pop('redirect-to', url_for('index'))
     session['user-id'] = user.id
     app.logger.info('User %s (%d) logged in successfully.',
             user.name, user.id)
@@ -51,4 +51,4 @@ def login():
 def logout():
     session.pop('user-id', None)
     flash('You have logged out.', 'success')
-    return redirect('/')
+    return redirect(url_for('index'))

@@ -1,5 +1,5 @@
 import os
-from flask import Flask, g, render_template, flash
+from flask import Flask, g, render_template, flash, redirect, url_for
 from flask.ext.markdown import Markdown
 
 app = Flask(__name__)
@@ -13,6 +13,8 @@ import db
 from users import User
 import login
 import posts
+
+app.add_url_rule('/', 'index', 'posts.list', defaults={'page': 1})
 
 @app.errorhandler(404)
 def page_not_found(error):
