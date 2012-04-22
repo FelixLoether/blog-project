@@ -1,7 +1,8 @@
 {% extends "base.html" %}
+{% from "posts/preview.html" import preview as render_preview %}
 
 {% block title %}
-  {% if post %}
+  {% if edit %}
     Edit {{ post.title|title }}
   {% else %}
     Create Post
@@ -9,19 +10,20 @@
 {% endblock %}
 
 {% block navigation %}
-  {% if post %}
+  {% if edit %}
     <li><a href="{{ url_for('posts.show', id=post.id) }}">Back to post</a></li>
   {% endif %}
 {% endblock %}
 
 {% block content %}
   {% with %}
+  {% set preview = preview|default(False) %}
   {% set title = post.title if post else '' %}
   {% set content = post.content if post else '' %}
   <form method="POST" action="" class="form-horizontal">
     <fieldset>
       <legend>
-        {% if post %}
+        {% if edit %}
           Edit {{ post.title|title }}
         {% else %}
           Create Post
@@ -42,9 +44,18 @@
       </div>
 
       <div class="form-actions">
-        <button class="btn btn-primary" type="submit">Save</button>
+        <button class="btn btn-primary" type="submit" name="task" value="save">
+          Save
+        </button>
+        <button class="btn" type="submit" name="task" value="preview">
+          Preview
+        </button>
       </div>
     </fieldset>
   </form>
+
+  {% if preview %}
+    {{ render_preview(post) }}
+  {% endif %}
   {% endwith %}
 {% endblock %}

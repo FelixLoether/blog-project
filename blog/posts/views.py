@@ -43,6 +43,17 @@ def show(id):
     post = get_post(id)
     return render_template('posts/show.html', post=post)
 
+def handle_get_and_preview(post, edit):
+    if request.method == 'GET':
+        return render_template('posts/edit.html', post=post, edit=edit)
+
+    if request.form['task'] == 'preview':
+        post = Post(request.form['title'], request.form['content'], g.user)
+        post.id = -1
+        return render_template('posts/edit.html', post=post, preview=True)
+
+    return None
+
 @blueprint.route('/<int:id>/edit', methods=('GET', 'POST'))
 def edit(id):
     if not g.user:
@@ -50,8 +61,9 @@ def edit(id):
 
     post = get_post(id)
 
-    if request.method == 'GET':
-        return render_template('posts/edit.html', post=post)
+    gap = handle_get_and_preview(post, True)
+    if gap:
+        return gap
 
     post.title = request.form['title']
     post.content = request.form['content']
@@ -64,8 +76,9 @@ def create():
     if not g.user:
         abort(403)
 
-    if request.method == 'GET':
-        return render_template('posts/edit.html', post=None)
+    gap = handle_get_and_preview(None, False)
+    if gap:
+        return gap
 
     post = Post(request.form['title'], request.form['content'], g.user)
     db.session.add(post)
