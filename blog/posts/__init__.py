@@ -15,7 +15,6 @@ class Post(db.Base):
     user = relationship('User', backref=backref('posts'))
 
     def __init__(self, title, content, author):
-        app.logger.info('Creating post "%s".', title)
         self.title = title
         self.content = content
         self.user = author

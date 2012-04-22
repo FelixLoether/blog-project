@@ -1,8 +1,9 @@
 from blog import app, db
 from blog.posts import Post
 from flask import Blueprint, abort, render_template, request, redirect, \
-    url_for, g, flash
+    url_for, g, flash, session
 import math
+import os
 
 blueprint = Blueprint('posts', __name__)
 
@@ -43,8 +44,14 @@ def show(id):
     post = get_post(id)
     return render_template('posts/show.html', post=post)
 
-def handle_get_and_preview(post, edit):
+def create_token(length=32):
+    # Take random bytes from os.urandom, turn them into hexadecimals, and join
+    # the result to one string.
+    return ''.join(map(lambda x: '{0:02x}'.format(ord(x)), os.urandom(length)))
+
+def preprocess(post, edit):
     if request.method == 'GET':
+        session['token'] = create_token()
         return render_template('posts/edit.html', post=post, edit=edit)
 
     if request.form['task'] == 'preview':
@@ -52,6 +59,15 @@ def handle_get_and_preview(post, edit):
         p.id = post.id if post else -1
         return render_template('posts/edit.html', post=p, preview=True,
                 edit=edit)
+
+    if request.form['token'] != session.pop('token', None):
+        app.logger.info('Token does not exist: %s', request.form['token'])
+        flash('Tokens did not match. Try again.', 'error')
+
+        if edit:
+            return redirect(url_for('posts.edit', id=post.id))
+        else:
+            return redirect(url_for('posts.create'))
 
     return None
 
@@ -62,9 +78,9 @@ def edit(id):
 
     post = get_post(id)
 
-    gap = handle_get_and_preview(post, True)
-    if gap:
-        return gap
+    res = preprocess(post, True)
+    if res:
+        return res
 
     post.title = request.form['title']
     post.content = request.form['content']
@@ -77,9 +93,9 @@ def create():
     if not g.user:
         abort(403)
 
-    gap = handle_get_and_preview(None, False)
-    if gap:
-        return gap
+    res = preprocess(None, False)
+    if res:
+        return res
 
     post = Post(request.form['title'], request.form['content'], g.user)
     db.session.add(post)
