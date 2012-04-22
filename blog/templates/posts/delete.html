@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% from "posts/preview.html" import preview %}
+
+{% block title %}
+  Delete {{ post.title|title }}
+{% endblock %}
+
+{% block navigation %}
+  <li><a href="{{ url_for('posts.edit', id=post.id) }}">Edit post</a></li>
+  <li><a href="{{ url_for('posts.show', id=post.id) }}">Back to post</a></li>
+{% endblock %}
+
+{% block content %}
+  <form class="alert alert-danger" method="POST" action="">
+    <input type="hidden" value="{{ session['token'] }}" name="token">
+    <strong>Are you sure</strong> you want to delete this post?
+    <button class="btn btn-danger btn-small" name="action" value="delete">
+      Yes, delete this post
+    </button>
+    <button class="btn btn-small" name="action" value="cancel">
+      Cancel
+    </button>
+  </form>
+
+  {{ preview(post) }}
+{% endblock %}

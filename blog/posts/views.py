@@ -49,6 +49,13 @@ def create_token(length=32):
     # the result to one string.
     return ''.join(map(lambda x: '{0:02x}'.format(ord(x)), os.urandom(length)))
 
+def validate_token():
+    if request.form['token'] != session.pop('token', None):
+        app.logger.info('Token does not exist: %s', request.form['token'])
+        flash('Tokens did not match. Try again.', 'error')
+        return False
+    return True
+
 def preprocess(post, edit):
     if request.method == 'GET':
         session['token'] = create_token()
@@ -60,10 +67,7 @@ def preprocess(post, edit):
         return render_template('posts/edit.html', post=p, preview=True,
                 edit=edit)
 
-    if request.form['token'] != session.pop('token', None):
-        app.logger.info('Token does not exist: %s', request.form['token'])
-        flash('Tokens did not match. Try again.', 'error')
-
+    if not validate_token():
         if edit:
             return redirect(url_for('posts.edit', id=post.id))
         else:
@@ -85,6 +89,7 @@ def edit(id):
     post.title = request.form['title']
     post.content = request.form['content']
     db.session.commit()
+    app.logger.info('Edited post %d', post.id)
     flash('Post edited successfully.', 'success')
     return redirect(url_for('posts.show', id=post.id))
 
@@ -100,7 +105,31 @@ def create():
     post = Post(request.form['title'], request.form['content'], g.user)
     db.session.add(post)
     db.session.commit()
+    app.logger.info('Created post %d', post.id)
     flash('Post created.', 'success')
     return redirect(url_for('posts.show', id=post.id))
+
+@blueprint.route('/<int:id>/delete', methods=('GET', 'POST'))
+def delete(id):
+    if not g.user:
+        abort(403)
+
+    post = get_post(id)
+
+    if request.method == 'GET':
+        session['token'] = create_token()
+        return render_template('posts/delete.html', post=post)
+
+    if not validate_token():
+        return redirect(url_for('posts.delete', id=post.id))
+
+    if request.form['action'] != 'delete':
+        return redirect(url_for('posts.show', id=post.id))
+
+    app.logger.info('Deleting post %d', post.id)
+    db.session.delete(post)
+    db.session.commit()
+    flash('Post deleted!', 'success')
+    return redirect(url_for('index'))
 
 app.register_blueprint(blueprint)

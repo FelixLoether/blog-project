@@ -11,6 +11,7 @@
 
 {% block navigation %}
   {% if edit %}
+    <li><a href="{{ url_for('posts.delete', id=post.id) }}">Delete post</a></li>
     <li><a href="{{ url_for('posts.show', id=post.id) }}">Back to post</a></li>
   {% endif %}
 {% endblock %}
