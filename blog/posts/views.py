@@ -48,9 +48,9 @@ def handle_get_and_preview(post, edit):
         return render_template('posts/edit.html', post=post, edit=edit)
 
     if request.form['task'] == 'preview':
-        post = Post(request.form['title'], request.form['content'], g.user)
-        post.id = -1
-        return render_template('posts/edit.html', post=post, preview=True,
+        p = Post(request.form['title'], request.form['content'], g.user)
+        p.id = post.id if post else -1
+        return render_template('posts/edit.html', post=p, preview=True,
                 edit=edit)
 
     return None
