@@ -1,0 +1,21 @@
+{% macro preview(post, paragraphs=None) %}
+  {% with %}
+    {% set content = post.content.replace('\r', '') %}
+    {% set ps = '\n\n'.join(content.split('\n\n')[:paragraphs]) %}
+    {% set shorten = ps != content %}
+
+    <article>
+      <h2>
+        <a href="{{url_for('posts.show', id=post.id)}}">{{post.title|title}}</a>
+        <small><time datetime="{{ post.creation_time.isoformat() }}" pudate>
+          {{- post.creation_time|timesince -}}
+        </time></small>
+      </h2>
+      {{ ps|markdown }}
+
+      {% if shorten %}
+        <a href="{{ url_for('posts.show', id=post.id) }}">Read more...</a>
+      {% endif %}
+    </article>
+  {% endwith %}
+{% endmacro %}

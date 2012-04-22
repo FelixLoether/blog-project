@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% from "posts/preview.html" import preview %}
+
+{% block title %}
+  Page {{ page }}
+{% endblock %}
+
+{% block navigation %}
+  {% if max_page > 1 %}
+    <li class="divider-vertical"></li>
+
+    <li {% if page == 1 %}class="active"{% endif %}>
+      <a href="{{ url_for('posts.list', page=1) }}">« First</a>
+    </li>
+
+    {% for p in pages %}
+      <li {% if page == p %}class="active"{% endif %}>
+        <a href="{{ url_for('posts.list', page=p) }}">{{ p }}</a>
+      </li>
+    {% endfor %}
+
+    <li {% if page == max_page %}class="active"{% endif %}>
+      <a href="{{ url_for('posts.list', page=max_page) }}">Last »</a>
+    </li>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% for post in posts %}
+    {{ preview(post, 3) }}
+  {% endfor %}
+{% endblock %}

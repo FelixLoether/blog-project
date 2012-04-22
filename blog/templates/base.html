@@ -1,0 +1,62 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>
+      {% block fulltitle %}Blog -
+        {% block title %}{% endblock %}
+      {% endblock %}
+    </title>
+    <link rel="stylesheet" href="/static/css/bootstrap.min.css" type="text/css">
+    <style type="text/css">
+      textarea {
+        min-height: 300px;
+      }
+
+      body {
+        text-align: justify;
+        margin-top: 50px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="navbar navbar-fixed-top">
+        <div class="navbar-inner">
+          <div class="container">
+            <a class="brand" href="/">Blog</a>
+            <ul class="nav">
+              <li><a href="{{ url_for('posts.list') }}">Posts</a></li>
+              {% if g.user %}
+                <li><a href="{{ url_for('posts.create') }}">Create Post</a></li>
+              {% endif %}
+              {% block navigation %}{% endblock %}
+            </ul>
+            <ul class="nav pull-right">
+              {% if g.user %}
+                <li><a href="{{ url_for('logout') }}">Log out</a></li>
+              {% else %}
+                <li><a href="{{ url_for('login') }}">Log in</a></li>
+              {% endif %}
+            </ul>
+          </div>
+        </div>
+      </div>
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="row">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }}">
+                <strong>{{ category|capitalize }}!</strong> {{ message }}
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
+      <div class="row">
+        {% block content %}{% endblock %}
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% from "posts/preview.html" import preview %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block navigation %}
+  {% if g.user %}
+    <li><a href="{{ url_for('posts.edit', id=post.id) }}">Edit post</a></li>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {{ preview(post) }}
+{% endblock %}
