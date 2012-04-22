@@ -5,5 +5,5 @@
 - passlib
 - Flask-Markdown
 
-## LICENCE
-Licenced under the MIT licence. See the file LICENCE for further information.
+## License
+Licensed under the MIT licence. See the file LICENSE for further information.
