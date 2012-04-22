@@ -6,4 +6,4 @@
 - Flask-Markdown
 
 ## License
-Licensed under the MIT licence. See the file LICENSE for further information.
+Licensed under the MIT license. See the file LICENSE for further information.
