@@ -61,7 +61,7 @@ def preprocess(post, edit):
         session['token'] = create_token()
         return render_template('posts/edit.html', post=post, edit=edit)
 
-    if request.form['task'] == 'preview':
+    if request.form['action'] == 'preview':
         p = Post(request.form['title'], request.form['content'], g.user)
         p.id = post.id if post else -1
         return render_template('posts/edit.html', post=p, preview=True,
