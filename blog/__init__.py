@@ -1,6 +1,7 @@
 import os
+import math
 from flask import Flask, g, render_template, flash, redirect, url_for, \
-        request, session
+        request, session, abort
 from flask.ext.markdown import Markdown
 
 app = Flask(__name__)
@@ -19,6 +20,28 @@ def validate_token():
         flash('Tokens did not match. Try again.', 'error')
         return False
     return True
+
+def paginate(query, page):
+    result = {}
+
+    if page <= 0:
+        abort(404)
+
+    num = app.config['NAVIGATION_PAGE_COUNT'] / 2
+    ppp = app.config['POSTS_PER_PAGE']
+    start = (page - 1) * ppp
+    end = start + ppp
+
+    result['posts'] = posts = query[start:end]
+    result['max_page'] = max_page = int(math.ceil(query.count() / float(ppp)))
+    result['pages'] = [p for p in xrange(page - num, page + num + 1)
+            if 1 < p < max_page]
+
+    if len(posts) == 0:
+        flash("We don't have that many posts.", 'error')
+        abort(404)
+
+    return result
 
 import timesince
 import logger

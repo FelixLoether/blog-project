@@ -1,35 +1,16 @@
-from blog import app, db, create_token, validate_token
+from blog import app, db, create_token, validate_token, paginate
 from blog.posts import Post
 from blog.tags import Tag, prepare_tag_name
 from flask import Blueprint, abort, render_template, request, redirect, \
     url_for, g, flash, session
-import math
 
 blueprint = Blueprint('posts', __name__)
 
 @blueprint.route('/', defaults={'page': 1})
 @blueprint.route('/page-<int:page>')
 def list(page):
-    if page <= 0:
-        abort(404)
-
-    start = (page - 1) * app.config['POSTS_PER_PAGE']
-    end = page * app.config['POSTS_PER_PAGE']
-
-    posts = db.session.query(Post).order_by(Post.id.desc())[start:end]
-
-    if len(posts) == 0:
-        flash("We don't have that many posts here.", 'error')
-        abort(404, 'woot')
-
-    max_page = int(math.ceil(
-        db.session.query(Post).count() / float(app.config['POSTS_PER_PAGE'])))
-
-    num = app.config['NAVIGATION_PAGE_COUNT'] / 2
-    pages = [p for p in xrange(page - num, page + num + 1) if 1 < p < max_page]
-
-    return render_template('posts/list.html', posts=posts, page=page,
-            pages=pages, max_page=max_page)
+    res = paginate(db.session.query(Post).order_by(Post.id.desc()), page)
+    return render_template('posts/list.html', page=page, **res)
 
 def get_post(post_id):
     try:
@@ -72,7 +53,7 @@ def preprocess(post, edit):
         return render_template('posts/edit.html', post=p, preview=True,
                 edit=edit, tags=req_tags), None
 
-    if not tags:
+    if tags is None:
         return render_template('posts/edit.html', post=post, edit=edit,
                 tags=req_tags), None
 
