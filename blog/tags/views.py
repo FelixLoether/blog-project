@@ -1,13 +1,17 @@
 from blog import app, db, create_token, validate_token
-from blog.tags import Tag, prepare_tag_name
+from blog.tags import Tag, prepare_tag_name, tag_post_association_table as tpat
+from blog.posts import Post
 from flask import Blueprint, abort, render_template, request, redirect, \
     url_for, g, flash, session
+from sqlalchemy import func, desc
 
 blueprint = Blueprint('tags', __name__)
 
 @blueprint.route('/')
 def list():
-    tags = db.session.query(Tag).order_by(Tag.name).all()
+    tags = db.session.query(Tag, func.count(tpat.c.post_id).label('numposts')).\
+            join(tpat).group_by(Tag.id).order_by(desc('numposts')).all()
+    tags = map(lambda x: x[0], tags)
     return render_template('tags/list.html', tags=tags)
 
 def get_tag(id):
