@@ -21,6 +21,7 @@
   {% set preview = preview|default(False) %}
   {% set title = post.title if post else '' %}
   {% set content = post.content if post else '' %}
+  {% set tags = post.tags if post else '' %}
   <form method="POST" action="" class="form-horizontal">
     <fieldset>
       <legend>
@@ -43,6 +44,21 @@
         <label class="control-label" for="content">Content:</label>
         <div class="controls">
           <textarea class="span10" name="content">{{ content }}</textarea>
+        </div>
+      </div>
+
+      <div class="control-group">
+        <label class="control-label" for="tags">Tags:</label>
+        <div class="controls">
+          {% if preview %}
+            <input type="text" class="span10" name="tags" value="{{post.taglist}}">
+          {% else %}
+            <input type="text" class="span10" name="tags" value="{%
+              for tag in tags -%}
+              {{ tag.name }}{% if not loop.last %} {% endif %}
+              {%- endfor %}">
+          {% endif %}
+          <span class="help-inline">Separate tag names with spaces.</span>
         </div>
       </div>
 

@@ -1,5 +1,6 @@
 from blog import app, db, create_token, validate_token
 from blog.posts import Post
+from blog.tags import Tag
 from flask import Blueprint, abort, render_template, request, redirect, \
     url_for, g, flash, session
 import math
@@ -38,6 +39,20 @@ def get_post(post_id):
         flash('That post does not exist.', 'error')
         abort(404)
 
+def get_tags(tag_string):
+    tag_names = tag_string.split()
+
+    tags = []
+    for name in tag_names:
+        try:
+            tags.append(db.session.query(Tag).filter_by(name=name).one())
+        except db.NoResultFound:
+            app.logger.warning('Trying to get invalid tag: "%s".', name)
+            flash('Tag {0} does not exist.'.format(name), 'error')
+            return None
+
+    return tags
+
 @blueprint.route('/<int:id>')
 def show(id):
     post = get_post(id)
@@ -46,21 +61,22 @@ def show(id):
 def preprocess(post, edit):
     if request.method == 'GET':
         session['token'] = create_token()
-        return render_template('posts/edit.html', post=post, edit=edit)
+        return render_template('posts/edit.html', post=post, edit=edit), None
 
     if request.form['action'] == 'preview':
         p = Post(request.form['title'], request.form['content'], g.user)
         p.id = post.id if post else -1
+        p.taglist = request.form['tags']
         return render_template('posts/edit.html', post=p, preview=True,
-                edit=edit)
+                edit=edit), None
 
     if not validate_token():
         if edit:
-            return redirect(url_for('posts.edit', id=post.id))
+            return redirect(url_for('posts.edit', id=post.id)), None
         else:
-            return redirect(url_for('posts.create'))
+            return redirect(url_for('posts.create')), None
 
-    return None
+    return None, get_tags(request.form['tags'])
 
 @blueprint.route('/<int:id>/edit', methods=('GET', 'POST'))
 def edit(id):
@@ -69,12 +85,13 @@ def edit(id):
 
     post = get_post(id)
 
-    res = preprocess(post, True)
+    res, tags = preprocess(post, True)
     if res:
         return res
 
     post.title = request.form['title']
     post.content = request.form['content']
+    post.tags = tags
     db.session.commit()
     app.logger.info('Edited post %d', post.id)
     flash('Post edited successfully.', 'success')
@@ -85,11 +102,12 @@ def create():
     if not g.user:
         abort(403)
 
-    res = preprocess(None, False)
+    res, tags = preprocess(None, False)
     if res:
         return res
 
     post = Post(request.form['title'], request.form['content'], g.user)
+    post.tags = tags
     db.session.add(post)
     db.session.commit()
     app.logger.info('Created post %d', post.id)

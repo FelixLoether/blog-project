@@ -12,10 +12,11 @@
 {% endblock %}
 
 {% block content %}
-  Tag {{ tag.name }} is used by 
+  <h2>Tag {{ tag.name }}</h2>
+  Tag is used by 
 
   {% if tag.posts %}
-    {{ tag.posts|length }} posts:
+  {{ tag.posts|length }} post{% if tag.posts|length != 1 %}s{% endif %}:
     <ul>
       {% for post in tag.posts %}
         <li>
