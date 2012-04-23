@@ -1,3 +1,5 @@
+Run `python install.py` to install.
+
 ## Requirements
 - Python2.6+
 - Flask
