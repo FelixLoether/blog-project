@@ -18,7 +18,7 @@ app.add_url_rule('/', 'index', 'posts.list', defaults={'page': 1})
 
 @app.errorhandler(404)
 def page_not_found(error):
-    return render_template('404.html')
+    return render_template('404.html'), 404
 
 def install(username, password):
     if app.config['DATABASE_PATH'] is not None:

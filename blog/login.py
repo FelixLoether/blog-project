@@ -5,7 +5,7 @@ from blog import app, db, User
 def require_login(error):
     session['redirect-to'] = request.url
     flash('You need to be logged in to view that content.', 'error')
-    return redirect(url_for('login'))
+    return redirect(url_for('login')), 403
 
 @app.before_request
 def load_user():
