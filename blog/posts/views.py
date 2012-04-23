@@ -1,6 +1,6 @@
 from blog import app, db, create_token, validate_token
 from blog.posts import Post
-from blog.tags import Tag
+from blog.tags import Tag, prepare_tag_name
 from flask import Blueprint, abort, render_template, request, redirect, \
     url_for, g, flash, session
 import math
@@ -39,16 +39,14 @@ def get_post(post_id):
         flash('That post does not exist.', 'error')
         abort(404)
 
-def get_tags(tag_string):
-    tag_names = tag_string.split()
-
+def get_tags(tag_names):
     tags = []
     for name in tag_names:
         try:
             tags.append(db.session.query(Tag).filter_by(name=name).one())
         except db.NoResultFound:
             app.logger.warning('Trying to get invalid tag: "%s".', name)
-            flash('Tag {0} does not exist.'.format(name), 'error')
+            flash('Tag "{0}" does not exist.'.format(name), 'error')
             return None
 
     return tags
@@ -63,12 +61,20 @@ def preprocess(post, edit):
         session['token'] = create_token()
         return render_template('posts/edit.html', post=post, edit=edit), None
 
+    req_tags = request.form['tags']
+    req_tags = map(prepare_tag_name, req_tags.split())
+    tags = get_tags(req_tags)
+    req_tags = ' '.join(req_tags)
+
     if request.form['action'] == 'preview':
         p = Post(request.form['title'], request.form['content'], g.user)
         p.id = post.id if post else -1
-        p.taglist = request.form['tags']
         return render_template('posts/edit.html', post=p, preview=True,
-                edit=edit), None
+                edit=edit, tags=req_tags), None
+
+    if not tags:
+        return render_template('posts/edit.html', post=post, edit=edit,
+                tags=req_tags), None
 
     if not validate_token():
         if edit:
@@ -76,7 +82,7 @@ def preprocess(post, edit):
         else:
             return redirect(url_for('posts.create')), None
 
-    return None, get_tags(request.form['tags'])
+    return None, tags
 
 @blueprint.route('/<int:id>/edit', methods=('GET', 'POST'))
 def edit(id):
