@@ -1,13 +1,32 @@
 {% extends "base.html" %}
+{% from "posts/preview.html" import preview %}
 
 {% block title %}
-  {{ tag.name }}
+  Tag {{ tag.name }} - Page {{ page }}
 {% endblock %}
 
 {% block navigation %}
   {% if g.user %}
     <li><a href="{{ url_for('tags.edit', id=tag.id) }}">Edit tag</a></li>
     <li><a href="{{ url_for('tags.delete', id=tag.id) }}">Delete tag</a></li>
+  {% endif %}
+
+  {% if max_page > 1 %}
+    <li class="divider-vertical"></li>
+
+    <li {% if page == 1 %}class="active"{% endif %}>
+      <a href="{{ url_for('tags.show', id=tag.id) }}">« First</a>
+    </li>
+
+    {% for p in pages %}
+      <li {% if page == p %}class="active"{% endif %}>
+        <a href="{{ url_for('tags.show', id=tag.id, page=p) }}">{{ p }}</a>
+      </li>
+    {% endfor %}
+
+    <li {% if page == max_page %}class="active"{% endif %}>
+      <a href="{{ url_for('tags.show', id=tag.id, page=max_page) }}">Last »</a>
+    </li>
   {% endif %}
 {% endblock %}
 
@@ -16,16 +35,11 @@
   Tag is used by 
 
   {% if tag.posts %}
-  {{ tag.posts|length }} post{% if tag.posts|length != 1 %}s{% endif %}:
-    <ul>
-      {% for post in tag.posts %}
-        <li>
-          <a href="{{ url_for('posts.show', id=post.id) }}">
-            {{ post.title|title }}
-          </a>
-        </li>
-      {% endfor %}
-    </ul>
+    {{ tag.posts|length }} post{% if tag.posts|length != 1 %}s{% endif %}.
+    Showing page {{ page }} of {{ max_page }}.
+    {% for post in posts %}
+      {{ preview(post, paragraphs=3) }}
+    {% endfor %}
   {% else %}
     no posts.
   {% endif %}

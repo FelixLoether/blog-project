@@ -12,7 +12,7 @@ PORT = 8033
 LOG_FILE_PATH = 'log.log'
 LOG_FORMAT = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
 
-POSTS_PER_PAGE = 1
+POSTS_PER_PAGE = 5
 # Maximum amount of pages in navigation (excluding "First" and "Last" links):
 NAVIGATION_PAGE_COUNT = 5
 

@@ -1,4 +1,4 @@
-from blog import app, db, create_token, validate_token
+from blog import app, db, create_token, validate_token, paginate
 from blog.tags import Tag, prepare_tag_name, tag_post_association_table as tpat
 from blog.posts import Post
 from flask import Blueprint, abort, render_template, request, redirect, \
@@ -22,10 +22,14 @@ def get_tag(id):
         flash('That tag does not exist.', 'error')
         abort(404)
 
-@blueprint.route('/<int:id>')
-def show(id):
+@blueprint.route('/<int:id>', defaults={'page': 1})
+@blueprint.route('/<int:id>/<int:page>')
+def show(id, page):
     tag = get_tag(id)
-    return render_template('tags/show.html', tag=tag)
+    post_ids = map(lambda x: x.id, tag.posts)
+    res = paginate(db.session.query(Post).\
+            filter(Post.id.in_(post_ids)).order_by(Post.id.desc()), page)
+    return render_template('tags/show.html', tag=tag, page=page, **res)
 
 def preprocess(tag, edit):
     if request.method == 'GET':
