@@ -35,7 +35,7 @@
   Tag is used by 
 
   {% if tag.posts %}
-    {{ tag.posts|length }} post{% if tag.posts|length != 1 %}s{% endif %}.
+    {{ tag.posts|length }} post{{ tag.posts|length|plural('s') }}.
     Showing page {{ page }} of {{ max_page }}.
     {% for post in posts %}
       {{ preview(post, paragraphs=3) }}

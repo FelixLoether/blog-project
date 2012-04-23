@@ -11,7 +11,7 @@
       {% for tag in tags %}
         <li>
           <a href="{{ url_for('tags.show', id=tag.id) }}">{{ tag.name }}</a>
-          (used by {{ tag.posts|length }} posts)
+          (used by {{ tag.posts|length }} post{{tag.posts|length|plural('s')}})
         </li>
       {% endfor %}
     </ul>

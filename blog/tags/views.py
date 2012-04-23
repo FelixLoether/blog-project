@@ -1,6 +1,6 @@
-from blog import app, db, create_token, validate_token, paginate
+from blog import app, db, create_token, validate_token
 from blog.tags import Tag, prepare_tag_name, tag_post_association_table as tpat
-from blog.posts import Post
+from blog.posts import Post, paginate
 from flask import Blueprint, abort, render_template, request, redirect, \
     url_for, g, flash, session
 from sqlalchemy import func, desc

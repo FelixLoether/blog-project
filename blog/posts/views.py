@@ -1,5 +1,5 @@
-from blog import app, db, create_token, validate_token, paginate
-from blog.posts import Post
+from blog import app, db, create_token, validate_token
+from blog.posts import Post, paginate
 from blog.tags import Tag, prepare_tag_name
 from flask import Blueprint, abort, render_template, request, redirect, \
     url_for, g, flash, session

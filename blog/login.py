@@ -1,5 +1,6 @@
 from flask import session, request, redirect, url_for, g, render_template, flash
-from blog import app, db, User
+from blog import app, db
+from users import User
 
 @app.errorhandler(403)
 def require_login(error):
