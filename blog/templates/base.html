@@ -32,6 +32,7 @@
               <li><a href="{{ url_for('posts.list') }}">Posts</a></li>
               {% if g.user %}
                 <li><a href="{{ url_for('posts.create') }}">Create Post</a></li>
+                <li><a href="{{ url_for('tags.create') }}">Create Tag</a></li>
               {% endif %}
               {% block navigation %}{% endblock %}
             </ul>

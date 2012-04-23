@@ -1,4 +1,4 @@
-from blog import db, app
+from blog import db
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
 from sqlalchemy.orm import relationship, backref
 from datetime import datetime

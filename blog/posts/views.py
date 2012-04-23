@@ -1,9 +1,8 @@
-from blog import app, db
+from blog import app, db, create_token, validate_token
 from blog.posts import Post
 from flask import Blueprint, abort, render_template, request, redirect, \
     url_for, g, flash, session
 import math
-import os
 
 blueprint = Blueprint('posts', __name__)
 
@@ -43,18 +42,6 @@ def get_post(post_id):
 def show(id):
     post = get_post(id)
     return render_template('posts/show.html', post=post)
-
-def create_token(length=32):
-    # Take random bytes from os.urandom, turn them into hexadecimals, and join
-    # the result to one string.
-    return ''.join(map(lambda x: '{0:02x}'.format(ord(x)), os.urandom(length)))
-
-def validate_token():
-    if request.form['token'] != session.pop('token', None):
-        app.logger.info('Token does not exist: %s', request.form['token'])
-        flash('Tokens did not match. Try again.', 'error')
-        return False
-    return True
 
 def preprocess(post, edit):
     if request.method == 'GET':

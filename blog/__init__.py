@@ -1,5 +1,6 @@
 import os
-from flask import Flask, g, render_template, flash, redirect, url_for
+from flask import Flask, g, render_template, flash, redirect, url_for, \
+        request, session
 from flask.ext.markdown import Markdown
 
 app = Flask(__name__)
@@ -7,12 +8,25 @@ Markdown(app, safe_mode=True)
 app.config.from_object('config')
 app.secret_key = app.config['SECRET_KEY']
 
+def create_token(length=32):
+    # Take random bytes from os.urandom, turn them into hexadecimals, and join
+    # the result to one string.
+    return ''.join(map(lambda x: '{0:02x}'.format(ord(x)), os.urandom(length)))
+
+def validate_token():
+    if request.form['token'] != session.pop('token', None):
+        app.logger.info('Token does not exist: %s', request.form['token'])
+        flash('Tokens did not match. Try again.', 'error')
+        return False
+    return True
+
 import timesince
 import logger
 import db
 from users import User
 import login
 import posts
+import tags
 
 app.add_url_rule('/', 'index', 'posts.list', defaults={'page': 1})
 

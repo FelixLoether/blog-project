@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}
+  {% if edit %}
+    Edit {{ tag.name }}
+  {% else %}
+    Create Tag
+  {% endif %}
+{% endblock %}
+
+{% block navigation %}
+  {% if edit %}
+    <li><a href="{{ url_for('tags.delete', id=tag.id) }}">Delete tag</a></li>
+    <li><a href="{{ url_for('tags.show', id=tag.id) }}">Back to tag</a></li>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% set tag_name = tag.name if edit else '' %}
+  <form method="POST" action="" class="form-horizontal">
+    <fieldset>
+      <legend>
+        {% if edit %}
+          Edit {{ tag_name }}
+        {% else %}
+          Create Tag
+        {% endif %}
+      </legend>
+      <input type="hidden" name="token" value="{{ session['token'] }}">
+
+      <div class="control-group">
+        <label class="control-label" for="name">Name:</label>
+        <div class="controls">
+          <input type="text" class="span10" name="name" value="{{ tag_name }}">
+        </div>
+      </div>
+
+      <div class="form-actions">
+        <button class="btn btn-primary" type="submit">
+          Save
+        </button>
+      </div>
+    </fieldset>
+  </form>
+{% endblock %}

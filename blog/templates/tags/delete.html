@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Delete {{ tag.name }}
+{% endblock %}
+
+{% block navigation %}
+  <li><a href="{{ url_for('tags.edit', id=tag.id) }}">Edit tag</a></li>
+  <li><a href="{{ url_for('tags.show', id=tag.id) }}">Back to tag</a></li>
+{% endblock %}
+
+{% block content %}
+  <form class="alert alert-danger" method="POST" action="">
+    <input type="hidden" value="{{ session['token'] }}" name="token">
+    <strong>Are you sure</strong> you want to delete this tag?
+    <button class="btn btn-danger btn-small" name="action" value="delete">
+      Yes, delete this tag
+    </button>
+    <button class="btn btn-small" name="action" value="cancel">
+      Cancel
+    </button>
+  </form>
+{% endblock %}
