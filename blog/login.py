@@ -8,7 +8,7 @@ from users import User
 def require_login(error):
     session['redirect-to'] = request.url
     flash('You need to be logged in to view that content.', 'error')
-    return redirect(url_for('login')), 403
+    return redirect(url_for('login'))
 
 
 @app.before_request
@@ -27,6 +27,8 @@ def load_user():
 @app.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'GET':
+        if 'redirect-to' in session:
+            return render_template('login.html'), 403
         return render_template('login.html')
 
     username = request.form['username']

@@ -1,4 +1,5 @@
-Run `python install.py` to install.
+After installing the requirements, run `python install.py` to install. To run
+the tests, use the command `py.test tests`.
 
 ## Requirements
 - Python2.6+

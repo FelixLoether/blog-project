@@ -61,6 +61,7 @@ def install(username, password):
 
             app.logger.warning('Removing database.')
 
+    db.make_session()
     db.init_db()
     admin = users.User(username, password)
     db.session.add(admin)
@@ -68,4 +69,5 @@ def install(username, password):
 
 
 def run():
+    db.make_session()
     app.run(host=app.config['HOST'], port=app.config['PORT'])
