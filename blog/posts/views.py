@@ -10,6 +10,11 @@ blueprint = Blueprint('posts', __name__)
 @blueprint.route('/page-<int:page>')
 def list(page):
     res = paginate(db.session.query(Post).order_by(Post.id.desc()), page)
+
+    if len(posts) == 0:
+        flash("We don't have that many posts.", 'error')
+        abort(404)
+
     return render_template('posts/list.html', page=page, **res)
 
 def get_post(post_id):

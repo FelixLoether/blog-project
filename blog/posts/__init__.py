@@ -45,10 +45,6 @@ def paginate(query, page):
     result['pages'] = [p for p in xrange(page - num, page + num + 1)
             if 1 < p < max_page]
 
-    if len(posts) == 0:
-        flash("We don't have that many posts.", 'error')
-        abort(404)
-
     return result
 
 import views
