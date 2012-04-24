@@ -10,7 +10,7 @@ blueprint = Blueprint('tags', __name__)
 @blueprint.route('/')
 def list():
     tags = db.session.query(Tag, func.count(tpat.c.post_id).label('numposts')).\
-            join(tpat).group_by(Tag.id).order_by(desc('numposts')).all()
+            outerjoin(tpat).group_by(Tag.id).order_by(desc('numposts')).all()
     tags = map(lambda x: x[0], tags)
     return render_template('tags/list.html', tags=tags)
 
