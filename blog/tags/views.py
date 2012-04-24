@@ -23,12 +23,17 @@ def get_tag(id):
         abort(404)
 
 @blueprint.route('/<int:id>', defaults={'page': 1})
-@blueprint.route('/<int:id>/<int:page>')
+@blueprint.route('/<int:id>/page-<int:page>')
 def show(id, page):
     tag = get_tag(id)
     post_ids = map(lambda x: x.id, tag.posts)
     res = paginate(db.session.query(Post).\
             filter(Post.id.in_(post_ids)).order_by(Post.id.desc()), page)
+
+    if page != 1 and len(res['posts']) == 0:
+        flash("This tag doesn't have that many posts.", 'error')
+        abort(404)
+
     return render_template('tags/show.html', tag=tag, page=page, **res)
 
 def preprocess(tag, edit):
