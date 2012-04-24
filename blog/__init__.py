@@ -1,5 +1,5 @@
 import os
-from flask import Flask, flash, request, session
+from flask import Flask, flash, request, session, render_template
 from flask.ext.markdown import Markdown
 
 app = Flask(__name__)
