@@ -9,11 +9,12 @@ engine = None
 session = None
 
 
-@app.before_first_request
 def make_session():
     global engine, session
     engine = create_engine(app.config['DATABASE_URL'], convert_unicode=True)
     session = scoped_session(sessionmaker(bind=engine))
+
+app.before_first_request(make_session)
 
 
 def init_db():
