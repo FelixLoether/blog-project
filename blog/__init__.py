@@ -69,5 +69,4 @@ def install(username, password):
 
 
 def run():
-    db.make_session()
     app.run(host=app.config['HOST'], port=app.config['PORT'])
