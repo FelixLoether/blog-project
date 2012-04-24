@@ -8,21 +8,14 @@ def pytest_funcarg__postsetup(request):
     return PostSetup()
 
 
-class PostSetup:
+class PostSetup(AppSetup):
     def __init__(self):
-        self.appsetup = AppSetup()
-        self.app = self.appsetup.app
+        AppSetup.__init__(self)
         self.user = db.session.query(User).first()
         self.create_post('Title', 'the content of the post')
 
-    def create_post(self, title, content):
+    def create_post(self, title='title', content='content'):
         p = Post(title, content, self.user)
         db.session.add(p)
         db.session.commit()
         return p
-
-    def login(self):
-        return self.appsetup.login()
-
-    def done(self):
-        self.appsetup.done()

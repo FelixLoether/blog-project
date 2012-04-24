@@ -33,9 +33,9 @@ class DbSetup:
         self.f.close()
 
 
-class AppSetup:
+class AppSetup(DbSetup):
     def __init__(self):
-        self.dbsetup = DbSetup()
+        DbSetup.__init__(self)
         self.app = app.test_client()
 
     def login(self, username='username', password='password'):
@@ -43,6 +43,3 @@ class AppSetup:
             'username': username,
             'password': password
         }, follow_redirects=True)
-
-    def done(self):
-        self.dbsetup.done()
