@@ -11,7 +11,7 @@ blueprint = Blueprint('posts', __name__)
 def list(page):
     res = paginate(db.session.query(Post).order_by(Post.id.desc()), page)
 
-    if len(posts) == 0:
+    if len(res['posts']) == 0:
         flash("We don't have that many posts.", 'error')
         abort(404)
 
