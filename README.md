@@ -6,6 +6,7 @@ Run `python install.py` to install.
 - SQLAlchemy
 - passlib
 - Flask-Markdown
+- py.test for the tests
 
 ## License
 Licensed under the MIT license. See the file LICENSE for further information.
