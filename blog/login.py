@@ -1,12 +1,15 @@
-from flask import session, request, redirect, url_for, g, render_template, flash
+from flask import session, request, redirect, url_for, g, render_template, \
+        flash
 from blog import app, db
 from users import User
+
 
 @app.errorhandler(403)
 def require_login(error):
     session['redirect-to'] = request.url
     flash('You need to be logged in to view that content.', 'error')
     return redirect(url_for('login')), 403
+
 
 @app.before_request
 def load_user():
@@ -19,6 +22,7 @@ def load_user():
         except db.NoResultFound:
             app.logger.error("Session's user id \"%s\" does not exist",
                     session['user-id'])
+
 
 @app.route('/login', methods=('GET', 'POST'))
 def login():
@@ -47,6 +51,7 @@ def login():
             user.name, user.id)
     flash('You have logged in.', 'success')
     return redirect(url)
+
 
 @app.route('/logout')
 def logout():

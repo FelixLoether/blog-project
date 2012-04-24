@@ -7,12 +7,15 @@ from sqlalchemy import func, desc
 
 blueprint = Blueprint('tags', __name__)
 
+
 @blueprint.route('/')
 def list():
-    tags = db.session.query(Tag, func.count(tpat.c.post_id).label('numposts')).\
+    tags = db.session.query(Tag,
+            func.count(tpat.c.post_id).label('numposts')).\
             outerjoin(tpat).group_by(Tag.id).order_by(desc('numposts')).all()
     tags = map(lambda x: x[0], tags)
     return render_template('tags/list.html', tags=tags)
+
 
 def get_tag(id):
     try:
@@ -21,6 +24,7 @@ def get_tag(id):
         app.logger.info('Nonexisting tag requested: %d', id)
         flash('That tag does not exist.', 'error')
         abort(404)
+
 
 @blueprint.route('/<int:id>', defaults={'page': 1})
 @blueprint.route('/<int:id>/page-<int:page>')
@@ -36,6 +40,7 @@ def show(id, page):
 
     return render_template('tags/show.html', tag=tag, page=page, **res)
 
+
 def preprocess(tag, edit):
     if request.method == 'GET':
         session['token'] = create_token()
@@ -48,6 +53,7 @@ def preprocess(tag, edit):
             return redirect(url_for('tags.create'))
 
     return None
+
 
 @blueprint.route('/<int:id>/edit', methods=('GET', 'POST'))
 def edit(id):
@@ -66,6 +72,7 @@ def edit(id):
     flash('Tag edited successfully.', 'success')
     return redirect(url_for('tags.show', id=tag.id))
 
+
 @blueprint.route('/create', methods=('GET', 'POST'))
 def create():
     if not g.user:
@@ -81,6 +88,7 @@ def create():
     app.logger.info('Tag created: %d', tag.id)
     flash('Tag created successfully.', 'success')
     return redirect(url_for('tags.show', id=tag.id))
+
 
 @blueprint.route('/<int:id>/delete', methods=('GET', 'POST'))
 def delete(id):

@@ -6,6 +6,7 @@ from flask import Blueprint, abort, render_template, request, redirect, \
 
 blueprint = Blueprint('posts', __name__)
 
+
 @blueprint.route('/', defaults={'page': 1})
 @blueprint.route('/page-<int:page>')
 def list(page):
@@ -17,6 +18,7 @@ def list(page):
 
     return render_template('posts/list.html', page=page, **res)
 
+
 def get_post(post_id):
     try:
         return db.session.query(Post).filter_by(id=post_id).one()
@@ -24,6 +26,7 @@ def get_post(post_id):
         app.logger.warning('Requested invalid post: "%s".', post_id)
         flash('That post does not exist.', 'error')
         abort(404)
+
 
 def get_tags(tag_names):
     tags = []
@@ -37,10 +40,12 @@ def get_tags(tag_names):
 
     return tags
 
+
 @blueprint.route('/<int:id>')
 def show(id):
     post = get_post(id)
     return render_template('posts/show.html', post=post)
+
 
 def preprocess(post, edit):
     if request.method == 'GET':
@@ -70,6 +75,7 @@ def preprocess(post, edit):
 
     return None, tags
 
+
 @blueprint.route('/<int:id>/edit', methods=('GET', 'POST'))
 def edit(id):
     if not g.user:
@@ -89,6 +95,7 @@ def edit(id):
     flash('Post edited successfully.', 'success')
     return redirect(url_for('posts.show', id=post.id))
 
+
 @blueprint.route('/create', methods=('GET', 'POST'))
 def create():
     if not g.user:
@@ -105,6 +112,7 @@ def create():
     app.logger.info('Created post %d', post.id)
     flash('Post created.', 'success')
     return redirect(url_for('posts.show', id=post.id))
+
 
 @blueprint.route('/<int:id>/delete', methods=('GET', 'POST'))
 def delete(id):

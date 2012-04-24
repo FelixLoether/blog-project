@@ -1,9 +1,10 @@
 from blog import app, db
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
+from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship, backref
-from flask import abort, flash
+from flask import abort
 from datetime import datetime
 import math
+
 
 class Post(db.Base):
     __tablename__ = 'posts'
@@ -29,6 +30,7 @@ class Post(db.Base):
 
         return datetime.strptime(self._creation_time, '%Y-%m-%d %H:%M:%S.%f')
 
+
 def paginate(query, page):
     result = {}
 
@@ -40,7 +42,7 @@ def paginate(query, page):
     start = (page - 1) * ppp
     end = start + ppp
 
-    result['posts'] = posts = query[start:end]
+    result['posts'] = query[start:end]
     result['max_page'] = max_page = int(math.ceil(query.count() / float(ppp)))
     result['pages'] = [p for p in xrange(page - num, page + num + 1)
             if 1 < p < max_page]

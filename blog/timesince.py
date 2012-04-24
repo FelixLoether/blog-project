@@ -5,6 +5,7 @@ from blog import app
 
 from datetime import datetime
 
+
 @app.template_filter()
 def timesince(dt, default="just now"):
     """

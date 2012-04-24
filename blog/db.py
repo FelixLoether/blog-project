@@ -9,10 +9,11 @@ session = scoped_session(sessionmaker(bind=engine))
 
 Base = declarative_base()
 
+
 def init_db():
     Base.metadata.create_all(engine)
+
 
 @app.teardown_request
 def remove_db_session(exception):
     session.remove()
-

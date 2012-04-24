@@ -2,6 +2,7 @@ from blog import db, app
 from sqlalchemy import Column, Integer, String
 from passlib.apps import custom_app_context as pwd_context
 
+
 class User(db.Base):
     __tablename__ = 'users'
 
