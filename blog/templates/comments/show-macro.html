@@ -1,0 +1,24 @@
+{% macro show_comment(comment, user=None) %}
+  <article class="well">
+    {% if user %}
+      <div class="comment-controls">
+        <a href="{{ url_for('comments.edit', id=comment.id) }}" class="icon-edit"></a>
+        <a href="{{ url_for('comments.delete', id=comment.id) }}" class="icon-remove"></a>
+      </div>
+    {% endif %}
+    <h4>
+      {% if comment.user %}
+        <span class="user">{{ comment.user.name }}</span>
+      {% else %}
+        <span class="anonymous">{{ comment.username }}</span>
+      {% endif %}
+      said
+      <time datetime="{{ comment.creation_time.isoformat() }}" pubdate>
+        {{- comment.creation_time|timesince -}}
+      </time>:
+    </h4>
+    <div class="content">
+      {{ comment.content }}
+    </div>
+  </article>
+{% endmacro %}

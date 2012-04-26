@@ -1,0 +1,51 @@
+{% macro edit_comment(post=None, comment=None, edit=True, token=None, user=None) %}
+  {% with %}
+    {% if edit %}
+      {% set url = url_for('comments.edit', id=comment.id) %}
+    {% else %}
+      {% set url = url_for('comments.create') %}
+    {% endif %}
+    <form method="POST" action="{{ url }}" class="form-horizontal">
+      <fieldset>
+        <legend>
+          {% if edit %}
+            Edit Comment
+          {% else %}
+            Post Comment
+          {% endif %}
+        </legend>
+        <input type="hidden" name="token" value="{{ token }}">
+        {% if post %}
+          <input type="hidden" name="post_id" value="{{ post.id }}">
+        {% endif %}
+
+        {% if (not user) or (user and edit) %}
+          <div class="control-group">
+            <label class="control-label" for="username">Your name:</label>
+            <div class="controls">
+              <input type="text" class="span10" name="username"
+                {%- if comment -%}
+                  value="{{ comment.username }}"
+                {%- endif %}>
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="control-group">
+          <label class="control-label" for="content">Comment:</label>
+          <div class="controls">
+            <textarea class="span10" name="content">
+              {%- if comment -%}
+                {{ comment.content }}
+              {%- endif -%}
+            </textarea>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary">Save</button>
+        </div>
+      </fieldset>
+    </form>
+  {% endwith %}
+{% endmacro %}

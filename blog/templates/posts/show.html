@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% from "posts/preview.html" import preview %}
+{% from "comments/show-macro.html" import show_comment %}
+{% from "comments/edit-macro.html" import edit_comment %}
 
 {% block title %}{{ post.title }}{% endblock %}
 
@@ -12,4 +14,13 @@
 
 {% block content %}
   {{ preview(post) }}
+
+  {% if post.comments %}
+    <h3>Comments</h3>
+    {% for comment in post.comments %}
+      {{ show_comment(comment, user=g.user) }}
+    {% endfor %}
+  {% endif %}
+
+  {{ edit_comment(post=post, edit=False, user=g.user, token=session['token']) }}
 {% endblock %}

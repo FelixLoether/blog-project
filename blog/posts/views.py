@@ -44,6 +44,7 @@ def get_tags(tag_names):
 @blueprint.route('/<int:id>')
 def show(id):
     post = get_post(id)
+    session['token'] = create_token()
     return render_template('posts/show.html', post=post)
 
 
@@ -132,6 +133,10 @@ def delete(id):
         return redirect(url_for('posts.show', id=post.id))
 
     app.logger.info('Deleting post %d', post.id)
+
+    for comment in post.comments:
+        db.session.delete(comment)
+
     db.session.delete(post)
     db.session.commit()
     flash('Post deleted!', 'success')

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% from "comments/show-macro.html" import show_comment %}
+
+{% block title %}
+  Show Comment
+{% endblock %}
+
+{% block navigation %}
+  <li>
+    <a href="{{ url_for('posts.show', id=comment.post.id) }}">Back to Post</a>
+  </li>
+  {% if g.user %}
+    <li>
+      <a href="{{ url_for('comments.edit', id=comment.id) }}">Edit Comment</a>
+    </li>
+    <li>
+      <a href="{{url_for('comments.delete', id=comment.id)}}">Delete Comment</a>
+    </li>
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {{ show_comment(comment, user=g.user) }}
+{% endblock %}

@@ -28,6 +28,7 @@ import users
 import login
 import posts
 import tags
+import comments
 
 app.add_url_rule('/', 'index', 'posts.list', defaults={'page': 1})
 

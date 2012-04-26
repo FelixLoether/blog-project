@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% from "comments/edit-macro.html" import edit_comment %}
+
+{% block title %}
+  {% if edit %}
+    Edit Comment
+  {% else %}
+    Post Comment
+  {% endif %}
+{% endblock %}
+
+{% block content %}
+  {% with post = post|default(None), comment=comment|default(None) %}
+    {{ edit_comment(edit=edit, user=g.user, token=session['token'], post=post,
+                    comment=comment) }}
+  {% endwith %}
+{% endblock %}
