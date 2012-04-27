@@ -18,7 +18,7 @@ def get_comment(id):
 
 def preprocess(comment, post, edit=False, delete=False):
     if request.method == 'GET':
-        session['token'] = create_token()
+        create_token()
 
         if delete:
             return render_template('comments/delete.html', comment=comment)
@@ -30,19 +30,22 @@ def preprocess(comment, post, edit=False, delete=False):
         if not request.form['content']:
             if g.json:
                 return jsonify(status='error',
-                        message='You need to add some content.')
+                        message='You need to add some content.',
+                        token=create_token())
             flash('You need to add some content.', 'error')
             return render_template('comments/edit.html', comment=comment,
                     post=post, edit=edit)
 
     if not validate_token():
         if g.json:
-            return jsonify(status='error', try_without_js=True)
+            return jsonify(status='error', message='Tokens did not match. ' +
+                'Try again.', token=create_token())
 
+        flash('Tokens did not match. Try again.', 'error')
         if delete:
             return redirect(url_for('comments.delete', id=comment.id))
 
-        session['token'] = create_token()
+        create_token()
         return render_template('comments/edit.html', comment=comment,
                 post=post, edit=edit)
 
@@ -52,6 +55,10 @@ def preprocess(comment, post, edit=False, delete=False):
 @blueprint.route('/<int:id>')
 def show(id):
     comment = get_comment(id)
+
+    if g.json:
+        return render_template('comments/show-small.html', comment=comment)
+
     return render_template('comments/show.html', comment=comment)
 
 
@@ -72,7 +79,8 @@ def create():
         if not request.form['username']:
             if g.json:
                 return jsonify(status='error',
-                        message='You have to add a name.')
+                        message='You have to add a name.',
+                        token=create_token())
             flash('You have to add a name.', 'error')
             session['token'] = create_token()
             return render_template('comments/edit.html', comment=comment,
@@ -88,7 +96,7 @@ def create():
 
     if g.json:
         return jsonify(status='success', message='Comment added.',
-            token=create_token())
+            token=create_token(), id=comment.id)
 
     flash('Comment created.', 'success')
     return redirect(url_for('posts.show', id=post_id))

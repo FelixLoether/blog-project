@@ -47,6 +47,8 @@ def preprocess(tag, edit):
         return render_template('tags/edit.html', tag=tag, edit=edit)
 
     if not validate_token():
+        flash('Tokens did not match. Try again.', 'error')
+
         if edit:
             return redirect(url_for('tags.edit', id=tag.id))
         else:

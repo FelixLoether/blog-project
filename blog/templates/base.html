@@ -20,18 +20,13 @@
         margin-top: 50px;
       }
 
-      .comment-controls {
-        float: right;
-      }
-
-      .comment-actions {
-        float: right;
-      }
-
-      .comment-actions > .btn {
-        display: block;
-        width: 5em;
+      .comment-controls button, .modal button {
+        min-width: 5em;
         margin: 2px;
+      }
+
+      .edit-username {
+        margin-top: 0.5em;
       }
 
       .anonymous {
@@ -82,7 +77,9 @@
     </div>
 
     <script type="text/coffeescript" src="/static/script.coffee"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.3.3/underscore-min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="/static/js/bootstrap.min.js"></script>
     <script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.3.1/coffee-script.min.js"></script>
   </body>
 </html>

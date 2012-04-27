@@ -60,6 +60,8 @@ def preprocess(post, edit):
                 tags=req_tags), None
 
     if not validate_token():
+        flash('Tokens did not match. Try again.', 'error')
+
         if edit:
             return redirect(url_for('posts.edit', id=post.id)), None
         else:

@@ -1,5 +1,5 @@
 import os
-from flask import Flask, flash, request, session, render_template, g
+from flask import Flask, flash, request, session, render_template, g, jsonify
 from flask.ext.markdown import Markdown
 
 app = Flask(__name__)
@@ -19,7 +19,6 @@ def create_token(length=32):
 def validate_token():
     if request.form['token'] != session.pop('token', None):
         app.logger.info('Token does not exist: %s', request.form['token'])
-        flash('Tokens did not match. Try again.', 'error')
         return False
     return True
 
