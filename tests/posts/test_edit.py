@@ -24,13 +24,14 @@ def test_anonymous_cannot_edit_post(postsetup):
     r = postsetup.app.get('/1/edit')
     token = get_token(r.data)
     postsetup.app.get('/logout')
-    r = edit_post(postsetup, token)
+    title = 'title-{0}'.format(token)
+    r = edit_post(postsetup, token, title=title)
 
     assert r.status_code == 403
     assert 'You need to be logged in to view that content' in r.data
 
     r = postsetup.app.get('/')
-    assert token not in r.data
+    assert title not in r.data
     postsetup.done()
 
 
@@ -44,8 +45,6 @@ def test_anonymous_cannot_preview_post(postsetup):
     assert r.status_code == 403
     assert 'You need to be logged in to view that content' in r.data
 
-    r = postsetup.app.get('/')
-    assert token not in r.data
     postsetup.done()
 
 
@@ -61,11 +60,12 @@ def test_admin_can_edit_post(postsetup):
     postsetup.login()
     r = postsetup.app.get('/1/edit')
     token = get_token(r.data)
+    title = 'title-{0}'.format(token)
 
-    r = edit_post(postsetup, token, title=token)
+    r = edit_post(postsetup, token, title=title)
 
     assert r.status_code == 200
-    assert token in r.data
+    assert title in r.data
     assert 'Success' in r.data
     postsetup.done()
 
@@ -74,11 +74,13 @@ def test_admin_can_preview_post(postsetup):
     postsetup.login()
     r = postsetup.app.get('/1/edit')
     token = get_token(r.data)
+    title = 'title-{0}'.format(token)
 
-    r = edit_post(postsetup, token, title=token, action='preview')
+    r = edit_post(postsetup, token, title=title, action='preview')
 
     assert r.status_code == 200
     assert '<article>' in r.data
+    assert title in r.data
     postsetup.done()
 
 

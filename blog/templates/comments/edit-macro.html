@@ -23,7 +23,7 @@
           <div class="control-group">
             <label class="control-label" for="username">Your name:</label>
             <div class="controls">
-              <input type="text" class="span10" name="username"
+              <input type="text" class="span11" name="username"
                 {%- if comment -%}
                   value="{{ comment.username }}"
                 {%- endif %}>
@@ -34,7 +34,7 @@
         <div class="control-group">
           <label class="control-label" for="content">Comment:</label>
           <div class="controls">
-            <textarea class="span10" name="content">
+            <textarea class="span11" name="content">
               {%- if comment -%}
                 {{ comment.content }}
               {%- endif -%}

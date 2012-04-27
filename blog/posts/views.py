@@ -1,5 +1,5 @@
 from blog import app, db, create_token, validate_token
-from blog.posts import Post, paginate
+from blog.posts import Post, paginate, get_post
 from blog.tags import Tag, prepare_tag_name
 from flask import Blueprint, abort, render_template, request, redirect, \
     url_for, g, flash, session
@@ -17,15 +17,6 @@ def list(page):
         abort(404)
 
     return render_template('posts/list.html', page=page, **res)
-
-
-def get_post(post_id):
-    try:
-        return db.session.query(Post).filter_by(id=post_id).one()
-    except db.NoResultFound:
-        app.logger.warning('Requested invalid post: "%s".', post_id)
-        flash('That post does not exist.', 'error')
-        abort(404)
 
 
 def get_tags(tag_names):

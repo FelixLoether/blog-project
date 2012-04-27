@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="/static/css/bootstrap.min.css">
     <link rel="stylesheet" href="/static/css/bootstrap-responsive.css">
     <style type="text/css">
-      textarea {
+      textarea.span10 {
         min-height: 300px;
       }
 
@@ -24,13 +24,23 @@
         float: right;
       }
 
+      .comment-actions {
+        float: right;
+      }
+
+      .comment-actions > .btn {
+        display: block;
+        width: 5em;
+        margin: 2px;
+      }
+
       .anonymous {
         color: gray;
       }
     </style>
   </head>
 
-  <body>
+  <body data-token="{{ session.get('token', '') }}">
     <div class="container">
       <div class="navbar navbar-fixed-top">
         <div class="navbar-inner">
@@ -70,5 +80,9 @@
         {% block content %}{% endblock %}
       </div>
     </div>
+
+    <script type="text/coffeescript" src="/static/script.coffee"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/coffee-script/1.3.1/coffee-script.min.js"></script>
   </body>
 </html>

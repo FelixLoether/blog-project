@@ -2,8 +2,8 @@
   <article class="well">
     {% if user %}
       <div class="comment-controls">
-        <a href="{{ url_for('comments.edit', id=comment.id) }}" class="icon-edit"></a>
-        <a href="{{ url_for('comments.delete', id=comment.id) }}" class="icon-remove"></a>
+        <a href="{{ url_for('comments.edit', id=comment.id) }}" class="icon-edit edit"></a>
+        <a href="{{ url_for('comments.delete', id=comment.id) }}" class="icon-remove delete"></a>
       </div>
     {% endif %}
     <h4>

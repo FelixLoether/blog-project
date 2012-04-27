@@ -1,7 +1,7 @@
 from blog import app, db
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import relationship, backref
-from flask import abort
+from flask import abort, flash
 from datetime import datetime
 import math
 
@@ -48,5 +48,14 @@ def paginate(query, page):
             if 1 < p < max_page]
 
     return result
+
+
+def get_post(post_id):
+    try:
+        return db.session.query(Post).filter_by(id=post_id).one()
+    except db.NoResultFound:
+        app.logger.warning('Requested invalid post: "%s".', post_id)
+        flash('That post does not exist.', 'error')
+        abort(404)
 
 import views

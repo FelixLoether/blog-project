@@ -20,13 +20,14 @@ def test_anonymous_cannot_edit_tag(tagsetup):
     r = tagsetup.app.get('/tags/1/edit')
     token = get_token(r.data)
     tagsetup.app.get('/logout')
-    r = edit_tag(tagsetup, token)
+    name = 'name-{0}'.format(token)
+    r = edit_tag(tagsetup, token, name=name)
 
     assert r.status_code == 403
     assert 'You need to be logged in to view that content' in r.data
 
     r = tagsetup.app.get('/tags/')
-    assert token not in r.data
+    assert name not in r.data
     tagsetup.done()
 
 
@@ -42,11 +43,12 @@ def test_admin_can_edit_tag(tagsetup):
     tagsetup.login()
     r = tagsetup.app.get('/tags/1/edit')
     token = get_token(r.data)
+    name = 'name-{0}'.format(token)
 
-    r = edit_tag(tagsetup, token, name=token)
+    r = edit_tag(tagsetup, token, name=name)
 
     assert r.status_code == 200
-    assert token in r.data
+    assert name in r.data
     assert 'Success' in r.data
     tagsetup.done()
 
