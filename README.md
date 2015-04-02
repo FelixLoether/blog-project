@@ -11,3 +11,4 @@ the tests, use the command `py.test tests`.
 
 ## License
 Licensed under the MIT license. See the file LICENSE for further information.
+
