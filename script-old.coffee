@@ -2,6 +2,7 @@ templates =
   comment: '/static/comment.tmpl'
   edit_comment: '/static/edit-comment.tmpl'
   delete_comment: '/static/delete-comment.tmpl'
+  
 
 $('body').on 'click', '.alert:not(.modal)', () ->
   $(this).fadeOut()
